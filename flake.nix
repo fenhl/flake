@@ -18,7 +18,7 @@
             (if devShells == {} then {} else {
                 devShells = eachSystem (system: let
                     pkgs = attrs.nixpkgs.legacyPackages.${system};
-                in builtins.mapAttrs (devShell: pkgs.mkShell (devShell {
+                in builtins.mapAttrs (_: devShell: pkgs.mkShell (devShell {
                     inherit pkgs;
                 })) devShells);
             })
