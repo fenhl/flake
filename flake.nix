@@ -8,7 +8,13 @@
                 "x86_64-darwin" # bureflux
                 "x86_64-linux" # bureflux, caturday, dushanbe, peterpc3, september
             ],
-            devShells ? {},
+            devShells ? {
+                default = { pkgs, ... }: {
+                    packages = with pkgs; [
+                        cargo
+                    ];
+                };
+            },
         }: let
             merge = builtins.foldl' (a: b: a // b) {};
             eachSystem = f: merge (builtins.map (system: {
