@@ -16,20 +16,29 @@
                     ];
                 };
             },
+            packages ? {},
         }: let
             merge = builtins.foldl' (a: b: a // b) {};
             eachSystem = f: merge (builtins.map (system: {
                 ${system} = f system;
             }) systems);
+            makePkgs = system: if overlays == [] then attrs.nixpkgs.legacyPackages.${system} else import attrs.nixpkgs {
+                inherit overlays system;
+            };
         in merge [
             (if devShells == {} then {} else {
                 devShells = eachSystem (system: let
-                    pkgs = if overlays == [] then attrs.nixpkgs.legacyPackages.${system} else import attrs.nixpkgs {
-                        inherit overlays system;
-                    };
+                    pkgs = makePkgs system;
                 in builtins.mapAttrs (_: devShell: pkgs.mkShell (devShell {
                     inherit pkgs;
                 })) devShells);
+            })
+            (if packages == {} then {} else {
+                packages = eachSystem (system: let
+                    pkgs = makePkgs system;
+                in builtins.mapAttrs (_: package: package {
+                    inherit pkgs;
+                }) packages);
             })
         ];
     };
