@@ -8,6 +8,7 @@
                 "x86_64-darwin" # bureflux
                 "x86_64-linux" # bureflux, caturday, dushanbe, peterpc3, september
             ],
+            overlays ? [],
             devShells ? {
                 default = { pkgs, ... }: {
                     packages = with pkgs; [
@@ -23,7 +24,9 @@
         in merge [
             (if devShells == {} then {} else {
                 devShells = eachSystem (system: let
-                    pkgs = attrs.nixpkgs.legacyPackages.${system};
+                    pkgs = if overlays == [] then attrs.nixpkgs.legacyPackages.${system} else import attrs.nixpkgs {
+                        inherit overlays system;
+                    };
                 in builtins.mapAttrs (_: devShell: pkgs.mkShell (devShell {
                     inherit pkgs;
                 })) devShells);
