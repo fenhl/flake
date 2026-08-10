@@ -17,7 +17,7 @@
         in merge [
             (if devShells == {} then {} else {
                 devShells = eachSystem (system: let
-                    pkgs = attrs.nixpkgs.legagyPackages.${system};
+                    pkgs = attrs.nixpkgs.legacyPackages.${system};
                 in builtins.mapAttrs (devShell: pkgs.mkShell (devShell {
                     inherit pkgs;
                 })) devShells);
