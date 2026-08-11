@@ -16,6 +16,7 @@
                     ];
                 };
             },
+            lib ? {},
             packages ? {},
         }: let
             merge = builtins.foldl' (a: b: a // b) {};
@@ -33,6 +34,7 @@
                     inherit pkgs;
                 })) devShells);
             })
+            (if lib == {} then {} else { inherit lib; })
             (if packages == {} then {} else {
                 packages = eachSystem (system: let
                     pkgs = makePkgs system;
