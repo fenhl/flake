@@ -1,0 +1,21 @@
+name: Update Nix dependencies
+
+on:
+  workflow_dispatch: # allows manual triggering
+  schedule:
+    - cron: '39 23 * * *' # runs daily at 23:39 (randomly generated time)
+
+jobs:
+  nix-flake-update:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: DeterminateSystems/determinate-nix-action@v3
+      - name: Update flake
+        run: |-
+          git config user.name "github bot"
+          git config user.email "actions@users.noreply.github.com"
+          nix flake update --commit-lock-file
+          git push
