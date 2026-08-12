@@ -40,6 +40,7 @@
             (if nixosConfigurations == {} then {} else {
                 nixosConfigurations = builtins.mapAttrs (_: config: if builtins.isFunction config then config {
                     inherit (attrs) nixpkgs;
+                    inherit (attrs.nixpkgs) lib;
                 } else config) nixosConfigurations;
             })
             (if packages == {} then {} else {
