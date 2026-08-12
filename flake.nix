@@ -18,6 +18,7 @@
                 };
             },
             lib ? {},
+            nixosConfigurations ? {},
             packages ? {},
         }: let
             merge = builtins.foldl' (a: b: a // b) {};
@@ -36,6 +37,11 @@
                 })) devShells);
             })
             (if lib == {} then {} else { inherit lib; })
+            (if nixosConfigurations == {} then {} else {
+                nixosConfigurations = builtins.mapAttrs (_: config: if builtins.isFunction config then config {
+                    inherit (attrs) nixpkgs;
+                } else config) nixosConfigurations;
+            })
             (if packages == {} then {} else {
                 packages = eachSystem (system: let
                     pkgs = makePkgs system;
