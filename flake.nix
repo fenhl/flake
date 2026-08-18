@@ -34,6 +34,9 @@
                     pkgs = makePkgs system;
                 in builtins.mapAttrs (_: devShell: pkgs.mkShell (devShell {
                     inherit pkgs;
+                    manifest = let
+                        cargoToml = pkgs.lib.importTOML ./Cargo.toml;
+                    in cargoToml.workspace.package or cargoToml.package;
                 })) devShells);
             })
             (if lib == {} then {} else { inherit lib; })
