@@ -33,7 +33,7 @@
                 devShells = eachSystem (system: let
                     pkgs = makePkgs system;
                 in builtins.mapAttrs (_: devShell: pkgs.mkShell (devShell {
-                    inherit pkgs;
+                    inherit pkgs system;
                 })) devShells);
             })
             (if lib == {} then {} else { inherit lib; })
@@ -47,7 +47,7 @@
                 packages = eachSystem (system: let
                     pkgs = makePkgs system;
                 in builtins.mapAttrs (_: package: package {
-                    inherit pkgs;
+                    inherit pkgs system;
                 }) packages);
             })
         ];
