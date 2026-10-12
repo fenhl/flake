@@ -34,6 +34,7 @@
                     pkgs = makePkgs system;
                 in builtins.mapAttrs (_: devShell: pkgs.mkShell (devShell {
                     inherit pkgs system;
+                    inherit (pkgs) lib;
                 })) devShells);
             })
             (if lib == {} then {} else { inherit lib; })
@@ -48,6 +49,7 @@
                     pkgs = makePkgs system;
                 in builtins.mapAttrs (_: package: package {
                     inherit pkgs system;
+                    inherit (pkgs) lib;
                 }) packages);
             })
         ];
